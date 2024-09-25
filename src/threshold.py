@@ -21,7 +21,7 @@ def check_if_retraining_data_is_sufficient(
     task_instance: TaskInstance = kwargs["ti"]
     last_week_revised_credit_petitions: list[list[str]] = task_instance.xcom_pull(task_ids="check_retraining_data_threshold.pull_last_week_revised_credit_petitions_number")
     last_week_revised_credit_petitions_number = int(last_week_revised_credit_petitions[0][0])
-    next_step: str = "ingest_last_week_revised_credit_petitions.query_last_week_revised_credit_petitions" if last_week_revised_credit_petitions_number > 12 \
+    next_step: str = "detect_drift" if last_week_revised_credit_petitions_number > 12 \
         else "retrain_ML_model_end"
     return next_step 
 

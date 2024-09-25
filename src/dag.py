@@ -1,8 +1,8 @@
 from datetime import datetime
 
+from retrain import retrain_ML_model
 from threshold import create_retraining_data_threshold
-from ingest import ingest_last_week_revised_credit_petitions
-from preprocess import preprocess_last_week_revised_credit_petitions
+from drift import detect_drift_step
 
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
@@ -15,11 +15,12 @@ with DAG(
 ) as dag:
     start = EmptyOperator(task_id="retrain_ML_model_start")
     end = EmptyOperator(task_id="retrain_ML_model_end")
+    retrain_model = retrain_ML_model(dag)
     
     check_retraining_data_threshold = create_retraining_data_threshold(dag)
-    ingest_petitions = ingest_last_week_revised_credit_petitions(dag)
-    preprocess_petitions = preprocess_last_week_revised_credit_petitions(dag)
+    detect_drift = detect_drift_step(dag)
     
     start >> check_retraining_data_threshold
-    check_retraining_data_threshold >> [ingest_petitions, end]
-    ingest_petitions >> preprocess_petitions
+    check_retraining_data_threshold >> [detect_drift, end]
+    detect_drift >> [retrain_model, end]
+    retrain_model >> end
