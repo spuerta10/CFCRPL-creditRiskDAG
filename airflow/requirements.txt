@@ -1,4 +1,0 @@
-scikit-learn==1.5.1
-credit-risk-lib @ git+https://github.com/spuerta10/CFCRPL-creditRiskLib.git@e5f171876dfee5d24da6ecad05e5bac30faa029a
-evidently==0.4.37
-google-cloud-bigquery==3.20.1
